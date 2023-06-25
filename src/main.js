@@ -2,6 +2,39 @@ require('dotenv').config()
 const { Client, LogLevel } = require("@notionhq/client");
 const schedule = require('node-schedule');
 
+const Web3 = require('web3').default;
+
+const web3 = new Web3('https://sepolia.infura.io/v3/d88965134b514340be64071885407190'); // Sepoliaのエンドポイントに変更
+
+const contractAddress = '0x9020144c4E1E7Ff3De45dD65DF8d07EC6849DA99';
+
+// スマートコントラクトのABIを設定
+const abi = [
+    {
+        constant: true,
+        inputs: [],
+        name: 'getLogicList',
+        outputs: [{name: '', type: 'string[]'}],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+    },
+];
+
+const contract = new web3.eth.Contract(abi, contractAddress);
+
+async function getLogicList() {
+    try {
+        const result = await contract.methods.getLogicList().call();
+        console.log(result);
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+getLogicList()
+
 // Notion APIのクライアントを初期化
 const notion = new Client({ 
   auth: process.env.NOTION_TOKEN,
@@ -14,17 +47,8 @@ const databaseId = process.env.NOTION_DATABASE_ID;
 // 一定期間ごとに実行するジョブをセット
 // この例では、毎分0秒に実行します
 schedule.scheduleJob('* * * * *', async function() {
-    const titles = ["Title 1", "Title 2", "Title 3"];
-    const images = [
-        "https://t4.ftcdn.net/jpg/05/09/39/87/360_F_509398736_P1S7GpzyCzp8nrj4kKrPlcKora6VJk6b.jpg",
-        "https://t4.ftcdn.net/jpg/05/09/39/87/360_F_509398736_P1S7GpzyCzp8nrj4kKrPlcKora6VJk6b.jpg",
-        "https://t4.ftcdn.net/jpg/05/09/39/87/360_F_509398736_P1S7GpzyCzp8nrj4kKrPlcKora6VJk6b.jpg",
-        "https://t4.ftcdn.net/jpg/05/09/39/87/360_F_509398736_P1S7GpzyCzp8nrj4kKrPlcKora6VJk6b.jpg",
-        "https://t4.ftcdn.net/jpg/05/09/39/87/360_F_509398736_P1S7GpzyCzp8nrj4kKrPlcKora6VJk6b.jpg",
-        "https://t4.ftcdn.net/jpg/05/09/39/87/360_F_509398736_P1S7GpzyCzp8nrj4kKrPlcKora6VJk6b.jpg",
-        "https://t4.ftcdn.net/jpg/05/09/39/87/360_F_509398736_P1S7GpzyCzp8nrj4kKrPlcKora6VJk6b.jpg",
-        "https://t4.ftcdn.net/jpg/05/09/39/87/360_F_509398736_P1S7GpzyCzp8nrj4kKrPlcKora6VJk6b.jpg",
-        "https://t4.ftcdn.net/jpg/05/09/39/87/360_F_509398736_P1S7GpzyCzp8nrj4kKrPlcKora6VJk6b.jpg"];
+    console.log(await getLogicList())
+    const titles = await getLogicList()
     console.log(titles)
   
   // 全てのページを取得
