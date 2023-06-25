@@ -4,7 +4,7 @@ const schedule = require('node-schedule');
 
 const Web3 = require('web3').default;
 
-const web3 = new Web3('https://sepolia.infura.io/v3/d88965134b514340be64071885407190'); // Sepoliaのエンドポイントに変更
+const web3 = new Web3('https://sepolia.infura.io/v3/'); // Sepoliaのエンドポイントに変更
 
 const contractAddress = '0x9020144c4E1E7Ff3De45dD65DF8d07EC6849DA99';
 
